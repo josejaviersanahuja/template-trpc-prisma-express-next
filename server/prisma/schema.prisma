@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(uuid())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  email          String         @unique
+  hashedPassword String
+  role           Role           @default(USER)
+  posts          Post[]
+  profile        Profile?
+  comments       Comment[]
+  likesPost      Like_Post[]
+  likesComment   Like_Comment[]
+}
+
+model Profile {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  bio         String
+  displayName String
+  familyName  String?
+  givenName   String?
+  middleName  String?
+  photoURL    String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId      String   @unique
+}
+
+enum Role {
+  USER
+  WRITER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model Post {
+  id             String      @id @default(uuid())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  status         POST_STATUS @default(DRAFT)
+  titleSpanish   String
+  titleEnglish   String
+  contentSpanish String?
+  contentEnglish String?
+  author         User        @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: NoAction)
+  authorId       String
+  comments       Comment[]
+  likesPost      Like_Post[]
+}
+
+enum POST_STATUS {
+  DRAFT
+  PUBLISHED
+  DELETED
+}
+
+model Comment {
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  content      String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId       String
+  post         Post           @relation(fields: [postId], references: [id])
+  postId       String
+  parent       Comment?       @relation("ParentToChild", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  children     Comment[]      @relation("ParentToChild")
+  parentId     String?
+  likesComment Like_Comment[]
+}
+
+model Like_Post {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+
+  @@unique([userId, postId])
+}
+
+model Like_Comment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId String
+
+  @@unique([userId, commentId])
+}
