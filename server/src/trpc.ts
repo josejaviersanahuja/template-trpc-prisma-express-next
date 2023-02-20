@@ -1,4 +1,4 @@
-import { initTRPC, TRPCError } from '@trpc/server'
+import { initTRPC } from '@trpc/server'
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { PrismaClient } from '@prisma/client'
 
