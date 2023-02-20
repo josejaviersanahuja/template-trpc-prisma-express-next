@@ -1,8 +1,9 @@
-import { adminProcedure, t, prisma } from '../trpc'
+import { prisma, publicProcedure, router } from '../trpc'
 import { z } from 'zod'
+import { adminProcedure } from '../trpcMiddlewares/isAdminMiddleware'
 
-export const userRouter = t.router({
-  getUserById: t.procedure
+export const userRouter = router({
+  getUserById: publicProcedure
     .input(z.object({
       id: z.string().uuid()
     }))
@@ -14,7 +15,7 @@ export const userRouter = t.router({
       })
       return user
     }),
-  getUserByEmail: t.procedure
+  getUserByEmail: publicProcedure
     .input(z.object({
       email: z.string().email()
     }))

@@ -13,7 +13,7 @@ interface Context {
   };
 }
 
-export function createContext ({ req, res }: CreateExpressContextOptions) {
+export function createContext ({ req, res }: CreateExpressContextOptions) : Context {
   return {
     // @TODO add your context here
     user: {
@@ -26,25 +26,11 @@ export function createContext ({ req, res }: CreateExpressContextOptions) {
 // Init trpc
 export const t = initTRPC.context<Context>().create()
 
-// Create Middleware @TODO
-const isAdminMiddleware = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.user?.isAdmin) {
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: 'You are not authorized to do this',
-      cause: 'the cause is...'
-    })
-  }
-  return next({
-    ctx: {
-      user: {
-        id: '123',
-        name: 'John Doe'
-      }
-    }
-  })
-})
+// router
+export const router = t.router
+
+// Create Middleware
+export const middleware = t.middleware
 
 // Create a procedure middleware
-export const adminProcedure = t.procedure.use(isAdminMiddleware)
-// go to userRouter to see how to use it
+export const publicProcedure = t.procedure
