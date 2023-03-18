@@ -32,5 +32,10 @@ export const router = t.router
 // Create Middleware
 export const middleware = t.middleware
 
+const logger = middleware((all) => {
+  console.log('before', all.input, all.rawInput)
+  return all.next()
+})
+
 // Create a procedure middleware
-export const publicProcedure = t.procedure
+export const publicProcedure = t.procedure.use(logger)

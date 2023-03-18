@@ -9,7 +9,9 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   
   useEffect(() => {
-    trpcClient.hello.query({name: 'Jorge'})
+    trpcClient.logToServer.mutate({
+      message: 'John',
+    })
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
   }, [])

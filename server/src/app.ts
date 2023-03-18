@@ -35,7 +35,7 @@ app.use(logger('combined', { stream: accessLogStream }))
 // Middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(apiKey)
+// app.use(apiKey)
 
 // tRPC
 app.use('/trpc', createExpressMiddleware({ router: appRouter, createContext }))

@@ -1,6 +1,8 @@
+import dotenv from 'dotenv'
 import http from 'http'
 import debug from 'debug'
 import app from './app'
+dotenv.config()
 
 const debugLog = debug('server:server')
 const debugErrors = debug('ERROR:index')
